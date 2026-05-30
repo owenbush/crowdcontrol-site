@@ -22,13 +22,6 @@ const params = [
     value: 0.55,
   },
   {
-    name: 'DRY / WET',
-    tag: 'WET / DRY',
-    range: '0 – 100 %',
-    desc: 'Wet / dry blend between your source signal and the generated crowd. Pull back to keep the lead up front.',
-    value: 0.65,
-  },
-  {
     name: 'TIMING',
     tag: 'SPREAD',
     range: '0 – 200 ms',
@@ -55,6 +48,13 @@ const params = [
     range: '0 – 100 %',
     desc: 'Amount of continuous, organic movement and drift applied to the whole crowd to keep it feeling alive.',
     value: 0.40,
+  },
+  {
+    name: 'DRY / WET',
+    tag: 'MIX',
+    range: '0 – 100 %',
+    desc: 'Wet / dry blend between your source signal and the generated crowd. Pull back to keep the lead up front.',
+    value: 0.65,
   },
 ];
 
@@ -178,14 +178,8 @@ function knobArc(value: number, size = 42): string {
 
       <div class="hero__device">
         <div class="device-frame">
-          <img
-            src={`${base}plugin-screenshot.svg`}
-            alt="CrowdControl plugin interface"
-            width="600"
-            height="500"
-            class="device-frame__img"
-          />
-          <span class="device-tag">plugin UI &middot; screenshot</span>
+          <div id="plugin-demo" class="device-frame__demo"></div>
+          <span class="device-tag">live demo &middot; drag a knob</span>
         </div>
       </div>
     </div>
@@ -265,6 +259,30 @@ function knobArc(value: number, size = 42): string {
           </div>
         ))}
       </div>
+
+      <div class="quality-section">
+        <h3 class="quality-title">Quality modes</h3>
+        <p class="quality-intro">
+          CrowdControl lets you trade CPU for density. Click the mode button in the plugin footer to cycle through three tiers — the setting is fully automatable and saves with your DAW session.
+        </p>
+        <div class="quality-grid">
+          <div class="quality-card">
+            <span class="quality-badge quality-badge--eco">ECO</span>
+            <span class="quality-voices">16 real voices</span>
+            <p>Density taps and diffusion fill out the crowd. Light on CPU — ideal for laptops or sessions with many instances.</p>
+          </div>
+          <div class="quality-card">
+            <span class="quality-badge quality-badge--high">HIGH</span>
+            <span class="quality-voices">64 real voices</span>
+            <p>Every voice up to 64 gets its own processing chain. A solid middle ground for most sessions.</p>
+          </div>
+          <div class="quality-card">
+            <span class="quality-badge quality-badge--ultra">ULTRA</span>
+            <span class="quality-voices">128 real voices</span>
+            <p>Full 1:1 processing — every voice on the knob is independently pitch-shifted, time-varied and panned. Maximum density and realism.</p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -307,6 +325,32 @@ function knobArc(value: number, size = 42): string {
     </div>
   </footer>
 </Base>
+
+<!-- ═══════════════════════════════════════════════
+     LIVE DEMO — React plugin embedded in hero
+     ═══════════════════════════════════════════════ -->
+<script is:inline src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script is:inline src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script is:inline src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
+<script is:inline type="text/babel" data-type="module">
+  // Load demo components
+  const base = document.querySelector('meta[name="demo-base"]')?.content || '/crowdcontrol-site/';
+  async function loadScript(src) {
+    const res = await fetch(base + src);
+    const code = res.ok ? await res.text() : '';
+    const transformed = Babel.transform(code, { presets: ['react'] }).code;
+    new Function(transformed)();
+  }
+  await loadScript('demo/knob.jsx');
+  await loadScript('demo/hero-knob.jsx');
+  await loadScript('demo/crowd-viz.jsx');
+  await loadScript('demo/plugin.jsx');
+
+  const container = document.getElementById('plugin-demo');
+  if (container && window.CrowdPlugin) {
+    ReactDOM.createRoot(container).render(React.createElement(CrowdPlugin, { initialVoices: 16 }));
+  }
+</script>
 
 <!-- ═══════════════════════════════════════════════
      CLIENT JS — GitHub Releases fetch
@@ -748,6 +792,102 @@ function knobArc(value: number, size = 42): string {
     line-height: 1.55;
   }
 
+  /* ── Live demo ── */
+  .device-frame__demo {
+    width: 100%;
+    aspect-ratio: 6 / 5;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .device-frame__demo :global(.crowd-plugin) {
+    width: 100%;
+    height: 100%;
+    background:
+      radial-gradient(120% 80% at 50% 30%, #20203a 0%, var(--bg) 60%),
+      var(--bg);
+    color: var(--text);
+    font-family: var(--font-ui);
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* ── Quality modes ── */
+  .quality-section {
+    margin-top: 56px;
+    padding-top: 40px;
+    border-top: 1px solid var(--line);
+  }
+
+  .quality-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .quality-intro {
+    font-size: 15px;
+    color: var(--text-dim);
+    max-width: 560px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  .quality-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .quality-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 24px 22px;
+  }
+
+  .quality-badge {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 4px 12px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+  }
+
+  .quality-badge--eco {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-dim);
+  }
+
+  .quality-badge--high {
+    background: rgba(108, 99, 255, 0.15);
+    color: var(--accent-hi);
+  }
+
+  .quality-badge--ultra {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .quality-voices {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .quality-card p {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.55;
+    margin: 0;
+  }
+
   /* ════════════════ DOWNLOAD CTA ════════════════ */
   .cta-band {
     position: relative;
@@ -894,6 +1034,11 @@ function knobArc(value: number, size = 42): string {
 
     .nav__version {
       display: none;
+    }
+
+    .quality-grid {
+      grid-template-columns: 1fr;
+      max-width: 520px;
     }
 
     .param-row {
