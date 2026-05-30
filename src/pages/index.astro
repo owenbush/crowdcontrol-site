@@ -329,23 +329,26 @@ function knobArc(value: number, size = 42): string {
   <script is:inline src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
   <script is:inline src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
   <script is:inline src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
-  <script is:inline type="text/babel" data-type="module">
-    const base = document.querySelector('meta[name="demo-base"]')?.content || '/crowdcontrol-site/';
-    async function loadScript(src) {
-      const res = await fetch(base + src);
-      const code = res.ok ? await res.text() : '';
-      const transformed = Babel.transform(code, { presets: ['react'] }).code;
-      new Function(transformed)();
-    }
-    await loadScript('demo/knob.jsx');
-    await loadScript('demo/hero-knob.jsx');
-    await loadScript('demo/crowd-viz.jsx');
-    await loadScript('demo/plugin.jsx');
+  <script is:inline type="text/babel">
+    (async function() {
+      var base = document.querySelector('meta[name="demo-base"]');
+      base = base ? base.content : '/crowdcontrol-site/';
+      async function loadScript(src) {
+        var res = await fetch(base + src);
+        var code = res.ok ? await res.text() : '';
+        var transformed = Babel.transform(code, { presets: ['react'] }).code;
+        new Function(transformed)();
+      }
+      await loadScript('demo/knob.jsx');
+      await loadScript('demo/hero-knob.jsx');
+      await loadScript('demo/crowd-viz.jsx');
+      await loadScript('demo/plugin.jsx');
 
-    const container = document.getElementById('plugin-demo');
-    if (container && window.CrowdPlugin) {
-      ReactDOM.createRoot(container).render(React.createElement(CrowdPlugin, { initialVoices: 16 }));
-    }
+      var container = document.getElementById('plugin-demo');
+      if (container && window.CrowdPlugin) {
+        ReactDOM.createRoot(container).render(React.createElement(CrowdPlugin, { initialVoices: 16 }));
+      }
+    })();
   </script>
 
   <!-- GitHub Releases fetch -->
