@@ -178,8 +178,13 @@ function knobArc(value: number, size = 42): string {
 
       <div class="hero__device">
         <div class="device-frame">
-          <div id="plugin-demo" class="device-frame__demo"></div>
-          <span class="device-tag">live demo &middot; drag a knob</span>
+          <img
+            src={`${base}plugin-screenshot.png`}
+            alt="CrowdControl plugin interface showing 90 voices with chrome hero knob and animated crowd visualization"
+            width="600"
+            height="500"
+            class="device-frame__img"
+          />
         </div>
       </div>
     </div>
@@ -324,32 +329,6 @@ function knobArc(value: number, size = 42): string {
       <span class="footer__copy">&copy; 2026 CrowdControl &middot; VOICE &rarr; CROWD</span>
     </div>
   </footer>
-
-  <!-- Live demo: React plugin embedded in hero -->
-  <script is:inline src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
-  <script is:inline src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
-  <script is:inline src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
-  <script is:inline type="text/babel">
-    (async function() {
-      var base = document.querySelector('meta[name="demo-base"]');
-      base = base ? base.content : '/crowdcontrol-site/';
-      async function loadScript(src) {
-        var res = await fetch(base + src);
-        var code = res.ok ? await res.text() : '';
-        var transformed = Babel.transform(code, { presets: ['react'] }).code;
-        new Function(transformed)();
-      }
-      await loadScript('demo/knob.jsx');
-      await loadScript('demo/hero-knob.jsx');
-      await loadScript('demo/crowd-viz.jsx');
-      await loadScript('demo/plugin.jsx');
-
-      var container = document.getElementById('plugin-demo');
-      if (container && window.CrowdPlugin) {
-        ReactDOM.createRoot(container).render(React.createElement(CrowdPlugin, { initialVoices: 16 }));
-      }
-    })();
-  </script>
 
   <!-- GitHub Releases fetch -->
   <script>
@@ -788,28 +767,6 @@ function knobArc(value: number, size = 42): string {
     font-size: 14px;
     color: var(--text-dim);
     line-height: 1.55;
-  }
-
-  /* ── Live demo ── */
-  .device-frame__demo {
-    width: 100%;
-    aspect-ratio: 6 / 5;
-    border-radius: 10px;
-    overflow: hidden;
-  }
-
-  .device-frame__demo :global(.crowd-plugin) {
-    width: 100%;
-    height: 100%;
-    background:
-      radial-gradient(120% 80% at 50% 30%, #20203a 0%, var(--bg) 60%),
-      var(--bg);
-    color: var(--text);
-    font-family: var(--font-ui);
-    position: relative;
-    overflow: hidden;
-    user-select: none;
-    -webkit-user-select: none;
   }
 
   /* ── Quality modes ── */
