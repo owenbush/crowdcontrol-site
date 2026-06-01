@@ -50,6 +50,13 @@ const params = [
     value: 0.40,
   },
   {
+    name: 'MURMUR',
+    tag: 'CROWD NOISE',
+    range: '0 – 100 %',
+    desc: 'Adds envelope-following filtered noise that simulates the ambient wash of a real crowd — breath, consonant smear, and body sound. Swells with your input, fades when silent.',
+    value: 0.25,
+  },
+  {
     name: 'DRY / WET',
     tag: 'MIX',
     range: '0 – 100 %',
@@ -166,7 +173,7 @@ function knobArc(value: number, size = 42): string {
             <span class="stat__label">max voices</span>
           </div>
           <div class="stat">
-            <span class="stat__val">7</span>
+            <span class="stat__val">8</span>
             <span class="stat__label">controls</span>
           </div>
           <div class="stat">
@@ -249,7 +256,7 @@ function knobArc(value: number, size = 42): string {
   <section class="parameters" id="parameters">
     <div class="wrap">
       <p class="eyebrow">THE CONTROLS</p>
-      <h2 class="section-h2">Seven knobs, fully documented.</h2>
+      <h2 class="section-h2">Eight knobs, fully documented.</h2>
 
       <div class="param-table">
         {params.map((p) => (
